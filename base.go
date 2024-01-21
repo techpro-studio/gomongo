@@ -13,6 +13,10 @@ type BaseMongoRepository struct {
 	collectionName string
 }
 
+func NewBaseMongoRepository(database *mongo.Database, collectionName string) *BaseMongoRepository {
+	return &BaseMongoRepository{database: database, collectionName: collectionName}
+}
+
 func (m *BaseMongoRepository) Collection() *mongo.Collection {
 	return m.database.Collection(m.collectionName)
 }
