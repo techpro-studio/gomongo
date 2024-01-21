@@ -1,11 +1,11 @@
 package gomongo
 
 import (
-	"github.com/techpro-studio/gohttplib"
+	"github.com/techpro-studio/gohttplib/location"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func LocationParametersToMongoQuery(parameters *gohttplib.LocationParameters) bson.M {
+func LocationParametersToMongoQuery(parameters *location.LocationParameters) bson.M {
 	if parameters == nil {
 		return nil
 	}
