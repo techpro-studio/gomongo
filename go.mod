@@ -1,4 +1,4 @@
-module github.com/techro-studio/gomongo
+module github.com/techpro-studio/gomongo
 
 go 1.20
 
