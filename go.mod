@@ -3,7 +3,7 @@ module github.com/techpro-studio/gomongo
 go 1.20
 
 require (
-	github.com/techpro-studio/gohttplib v0.0.0-20220115085116-704797c1ab23
+	github.com/techpro-studio/gohttplib v0.0.1
 	go.mongodb.org/mongo-driver v1.13.1
 )
 
