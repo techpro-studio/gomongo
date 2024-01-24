@@ -46,18 +46,12 @@ func (m *BaseMongoRepository) InsertOne(ctx context.Context, newValue interface{
 }
 
 func (m *BaseMongoRepository) GetList(ctx context.Context, result interface{}, q bson.M, skip, limit *int, sort *bson.D) int {
-	var opts options.FindOptions
-	if sort == nil {
-		opts = options.FindOptions{
-			Skip:  Int64Ptr(skip),
-			Limit: Int64Ptr(limit),
-		}
-	} else {
-		opts = options.FindOptions{
-			Skip:  Int64Ptr(skip),
-			Limit: Int64Ptr(limit),
-			Sort:  *sort,
-		}
+	opts := options.FindOptions{
+		Skip:  Int64Ptr(skip),
+		Limit: Int64Ptr(limit),
+	}
+	if sort != nil {
+		opts.Sort = *sort
 	}
 	cursor, err := m.Collection().Find(ctx, q, &opts)
 	if err != nil {
