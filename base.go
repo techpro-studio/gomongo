@@ -67,30 +67,3 @@ func (m *BaseMongoRepository) GetList(ctx context.Context, result interface{}, q
 	}
 	return int(count)
 }
-
-func InTransactionSession(Client *mongo.Client, ctx context.Context, f func(sc mongo.SessionContext) error) {
-	var session mongo.Session
-	session, err := Client.StartSession()
-	if err != nil {
-		panic(err)
-	}
-	err = session.StartTransaction()
-	if err != nil {
-		panic(err)
-	}
-	err = mongo.WithSession(ctx, session, func(sc mongo.SessionContext) error {
-		err := f(sc)
-		if err != nil {
-			return err
-		}
-		err = session.CommitTransaction(sc)
-		if err != nil {
-			panic(err)
-		}
-		return nil
-	})
-	if err != nil {
-		panic(err)
-	}
-	session.EndSession(ctx)
-}
