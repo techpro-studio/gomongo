@@ -2,7 +2,7 @@ package gomongo
 
 import (
 	"github.com/techpro-studio/gohttplib/location"
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 func LocationParametersToMongoQuery(parameters *location.LocationParameters) bson.M {

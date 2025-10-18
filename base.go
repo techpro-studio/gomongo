@@ -4,10 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 type BaseMongoRepository struct {
@@ -45,24 +44,29 @@ func (m *BaseMongoRepository) DeleteOne(ctx context.Context, q bson.M) error {
 	return err
 }
 
-func (m *BaseMongoRepository) InsertOne(ctx context.Context, newValue interface{}) (*primitive.ObjectID, error) {
+func (m *BaseMongoRepository) InsertOne(ctx context.Context, newValue interface{}) (*bson.ObjectID, error) {
 	result, err := m.Collection().InsertOne(ctx, newValue)
 	if err != nil {
 		return nil, err
 	}
-	objID := result.InsertedID.(primitive.ObjectID)
+	objID := result.InsertedID.(bson.ObjectID)
 	return &objID, nil
 }
 
 func (m *BaseMongoRepository) GetList(ctx context.Context, result interface{}, q bson.M, skip, limit *int, sort *bson.D) (int, error) {
-	opts := options.FindOptions{
-		Skip:  Int64Ptr(skip),
-		Limit: Int64Ptr(limit),
+
+	opts := options.Find()
+	if skip != nil {
+		opts.SetSkip(int64(*skip))
+	}
+	if limit != nil {
+		opts.SetSkip(int64(*limit))
 	}
 	if sort != nil {
-		opts.Sort = *sort
+		opts.SetSort(*sort)
 	}
-	cursor, err := m.Collection().Find(ctx, q, &opts)
+
+	cursor, err := m.Collection().Find(ctx, q, opts)
 	if err != nil {
 		return -1, err
 	}

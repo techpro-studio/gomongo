@@ -2,9 +2,9 @@ package gomongo
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 type MongoQuery struct {
@@ -85,11 +85,12 @@ func GetPaginatedListForQuery[Model any, Schema ModelConverted[Model]](ctx conte
 		limitPtr = &limit
 	}
 
-	opts := options.FindOptions{
-		Limit: Int64Ptr(limitPtr),
+	opts := options.Find()
+	if limitPtr != nil {
+		opts.SetSkip(int64(*limitPtr))
 	}
 	if mongoQuery.Sort != nil {
-		opts.Sort = mongoQuery.Sort
+		opts.SetSort(*mongoQuery.Sort)
 	}
 	fullQuery := bson.M{}
 
@@ -100,7 +101,7 @@ func GetPaginatedListForQuery[Model any, Schema ModelConverted[Model]](ctx conte
 		fullQuery[k] = v
 	}
 
-	cursor, err := collection.Find(ctx, fullQuery, &opts)
+	cursor, err := collection.Find(ctx, fullQuery, opts)
 	if err != nil {
 		return nil, err
 	}

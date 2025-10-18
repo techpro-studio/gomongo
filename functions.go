@@ -3,8 +3,7 @@ package gomongo
 import (
 	"fmt"
 	"github.com/techpro-studio/gohttplib"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/v2/bson"
 	"net/http"
 	"reflect"
 	"strings"
@@ -76,7 +75,7 @@ func GetValidObjectIdFromMap(body map[string]any, key string) (*string, error) {
 }
 
 func GetValidObjectId(id string, key string) (*string, error) {
-	_, err := primitive.ObjectIDFromHex(id)
+	_, err := bson.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, gohttplib.NewServerError(400, "INVALID_OBJECT_ID", fmt.Sprintf("%s is not a valid ID", id), key, nil)
 	}

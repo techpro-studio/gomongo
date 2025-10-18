@@ -2,14 +2,14 @@ package gomongo
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // In case you need to return no Value
 
 type Void struct{}
 
-type TransactionFunction[T any] func(sc mongo.SessionContext) (T, error)
+type TransactionFunction[T any] func(sc context.Context) (T, error)
 
 func InTransactionSession[T any](ctx context.Context, client *mongo.Client, f TransactionFunction[T]) (T, error) {
 	session, err := client.StartSession()
@@ -19,7 +19,7 @@ func InTransactionSession[T any](ctx context.Context, client *mongo.Client, f Tr
 	}
 	defer session.EndSession(ctx)
 	var value T
-	err = mongo.WithSession(ctx, session, func(sc mongo.SessionContext) error {
+	err = mongo.WithSession(ctx, session, func(sc context.Context) error {
 		err := session.StartTransaction()
 		if err != nil {
 			return err

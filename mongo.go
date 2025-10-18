@@ -2,18 +2,18 @@ package gomongo
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
 	"time"
 )
 
-func StrToObjId(id *string) *primitive.ObjectID {
+func StrToObjId(id *string) *bson.ObjectID {
 	if id == nil {
 		return nil
 	}
-	objID, err := primitive.ObjectIDFromHex(*id)
+	objID, err := bson.ObjectIDFromHex(*id)
 	if err != nil {
 		panic(err)
 	}
@@ -21,21 +21,16 @@ func StrToObjId(id *string) *primitive.ObjectID {
 }
 
 func ConnectToMongo(uri string) *mongo.Client {
-	client, err := mongo.NewClient(options.Client().ApplyURI(uri))
+	client, err := mongo.Connect(options.Client().ApplyURI(uri))
 	if err != nil {
 		panic(err)
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	err = client.Connect(ctx)
-	if err != nil {
-		panic(err)
-	}
-	ctx, _ = context.WithTimeout(context.Background(), 2*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 2*time.Second)
 	err = client.Ping(ctx, readpref.Primary())
 	return client
 }
 
-func ObjIdToStr(id *primitive.ObjectID) *string {
+func ObjIdToStr(id *bson.ObjectID) *string {
 	if id == nil {
 		return nil
 	}
@@ -43,7 +38,7 @@ func ObjIdToStr(id *primitive.ObjectID) *string {
 	return &hex
 }
 
-func ObjIdListToStrList(list []primitive.ObjectID) []string {
+func ObjIdListToStrList(list []bson.ObjectID) []string {
 	var result []string
 	for _, item := range list {
 		result = append(result, item.Hex())
@@ -51,8 +46,8 @@ func ObjIdListToStrList(list []primitive.ObjectID) []string {
 	return result
 }
 
-func StrListToObjIdList(list []string) []primitive.ObjectID {
-	var result []primitive.ObjectID
+func StrListToObjIdList(list []string) []bson.ObjectID {
+	var result []bson.ObjectID
 	for _, item := range list {
 		result = append(result, *StrToObjId(&item))
 	}
