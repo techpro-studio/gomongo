@@ -21,7 +21,8 @@ func StrToObjId(id *string) *bson.ObjectID {
 }
 
 func ConnectToMongo(uri string) *mongo.Client {
-	client, err := mongo.Connect(options.Client().ApplyURI(uri))
+	opts := options.Client().ApplyURI(uri).SetBSONOptions(&options.BSONOptions{ObjectIDAsHexString: true})
+	client, err := mongo.Connect(opts)
 	if err != nil {
 		panic(err)
 	}

@@ -87,7 +87,7 @@ func GetPaginatedListForQuery[Model any, Schema ModelConverted[Model]](ctx conte
 
 	opts := options.Find()
 	if limitPtr != nil {
-		opts.SetSkip(int64(*limitPtr))
+		opts.SetLimit(int64(*limitPtr))
 	}
 	if mongoQuery.Sort != nil {
 		opts.SetSort(*mongoQuery.Sort)
