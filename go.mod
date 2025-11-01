@@ -8,6 +8,7 @@ require (
 )
 
 require (
+	github.com/golang/protobuf v1.5.0 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/johngb/langreg v0.0.0-20150123211413-5c6abc6d19d2 // indirect
 	github.com/julienschmidt/httprouter v1.3.0 // indirect
