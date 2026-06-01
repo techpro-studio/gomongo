@@ -41,6 +41,9 @@ func BuildUpdateDoc(v interface{}) bson.M {
 		value := val.Field(i)
 
 		bsonTag := field.Tag.Get("bson")
+		if bsonTag == "-" {
+			continue
+		}
 		if commaIndex := strings.Index(bsonTag, ","); commaIndex != -1 {
 			bsonTag = bsonTag[:commaIndex]
 		}
@@ -69,7 +72,7 @@ func ExtractCorrectObjectIdFromRequest(r *http.Request, key string, allowNull bo
 func GetValidObjectIdFromMap(body map[string]any, key string) (*string, error) {
 	id, ok := body[key].(string)
 	if !ok {
-		return nil, gohttplib.NewServerError(400, "INVALID_OBJECT_ID", fmt.Sprintf("%s is not event string", id), key, nil)
+		return nil, gohttplib.NewServerError(400, "INVALID_OBJECT_ID", fmt.Sprintf("%v is not even a string", body[key]), key, nil)
 	}
 	return GetValidObjectId(id, key)
 }

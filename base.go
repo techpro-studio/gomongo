@@ -2,7 +2,6 @@ package gomongo
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -28,9 +27,9 @@ func (m *BaseMongoRepository) UpdateOne(ctx context.Context, q bson.M, update bs
 		return err
 	}
 	if result.ModifiedCount != 1 {
-		return errors.New(fmt.Sprintf("Incorrect modified count should be 1 got %d", result.ModifiedCount))
+		return fmt.Errorf("incorrect modified count should be 1 got %d", result.ModifiedCount)
 	}
-	return err
+	return nil
 }
 
 func (m *BaseMongoRepository) DeleteOne(ctx context.Context, q bson.M) error {
@@ -39,9 +38,9 @@ func (m *BaseMongoRepository) DeleteOne(ctx context.Context, q bson.M) error {
 		return err
 	}
 	if result.DeletedCount != 1 {
-		return errors.New(fmt.Sprintf("Incorrect deleted count should be 1 got %d", result.DeletedCount))
+		return fmt.Errorf("incorrect deleted count should be 1 got %d", result.DeletedCount)
 	}
-	return err
+	return nil
 }
 
 func (m *BaseMongoRepository) InsertOne(ctx context.Context, newValue interface{}) (*bson.ObjectID, error) {
@@ -49,7 +48,10 @@ func (m *BaseMongoRepository) InsertOne(ctx context.Context, newValue interface{
 	if err != nil {
 		return nil, err
 	}
-	objID := result.InsertedID.(bson.ObjectID)
+	objID, ok := result.InsertedID.(bson.ObjectID)
+	if !ok {
+		return nil, fmt.Errorf("unexpected InsertedID type: %T", result.InsertedID)
+	}
 	return &objID, nil
 }
 
