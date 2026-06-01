@@ -60,7 +60,7 @@ func (m *BaseMongoRepository) GetList(ctx context.Context, result interface{}, q
 		opts.SetSkip(int64(*skip))
 	}
 	if limit != nil {
-		opts.SetSkip(int64(*limit))
+		opts.SetLimit(int64(*limit))
 	}
 	if sort != nil {
 		opts.SetSort(*sort)
